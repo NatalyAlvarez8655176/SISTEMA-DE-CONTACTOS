@@ -1,0 +1,112 @@
+{% extends 'bookphone/list.html' %}
+
+{% load staticfiles %}
+{% load static %}
+{% load utils %}
+
+{% block js %}
+<script>
+$('#group_phone').parent().addClass('active');
+$('#group_phone').css('display', 'block');
+//$('#group_phone').children('li').eq({{un.id}}).addClass('current-page');
+$('#{{uni.id}}').addClass('current-page');
+
+$('#activo{{personal_uni.id}}').addClass('btnactivo');
+</script>
+{% endblock %}
+
+{% block back %}
+<div class="title_right">
+    <p class="text-right" style="margin-bottom: 0px; padding-bottom: 0px;">
+        <a class="btn btn-dark btn-sm" href="{% url 'unidad' uni.id %}" style="margin-bottom: 0px;">
+            <span class="glyphicon glyphicon-backward"></span> REGRESAR
+        </a>
+    </p>
+</div>
+{% endblock %}
+
+{% block home %}
+<br>
+<br>
+<br>
+<div class="col-md-7 col-sm-12 col-xs-12">
+    <div class="card">
+        <div class="x_title" align="center">
+            <h3><font face="Baskerville Old Face"> DETALLE PERSONAL {{uni.name}}</font></h3>
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-md-4" align="right">
+                        <img src="{% static 'build/images/name.png' %} ">
+                    </div>
+                    <div class="col-md-8">
+                        <h2><font face="Monotype Corsiva" size="4px">NOMBRE</font></h2>
+                        <h4><font size="4px">{{ personal_uni.name}} {{ personal_uni.lastname }}</font></h4>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-4" align="right">
+                        <img src="{% static 'build/images/cargo1.png' %} ">
+                    </div>
+                    <div class="col-md-8">
+                        <h2><font face="Monotype Corsiva" size="4px">CARGO</font></h2>
+                        <h4><font size="4px">{{ personal_uni.position}}</font></h4>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-4" align="right">
+                        <img src="{% static 'build/images/telefono.png' %} ">
+                    </div>
+                    <div class="col-md-8">
+                        <h2><font face="Monotype Corsiva" size="4px">TELEFONO</font></h2>
+                        <h4><font size="4px">{{ personal_uni.telephone}}</font></h4>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-4" align="right">
+                        <img src="{% static 'build/images/cel.png' %} ">
+                    </div>
+                    <div class="col-md-8">
+                        <h2><font face="Monotype Corsiva" size="4px">CELULAR</font></h2>
+                        <h4><font size="4px">{{ personal_uni.phone}}</font></h4>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div class="col-md-5" align="left">
+                    <div align=""><h2><font face="Monotype Corsiva" size="4px">FOTO</font></h2></div>
+                    <img src="{{ personal_uni.image.url }}" class="img1-circle profile_img">
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+    </div>
+</div>
+{% endblock%}
+
+{% block unidad %}
+{% endblock %}
+
+{% block personal_unidad %}
+<div class="col-md-5 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <div class=" clearfix" align="center">
+                <h4><img src="{% static 'build/images/personal.png' %}"> PERSONAL {{uni.name}}</h4>
+            </div>
+        </div>
+        {% get_personalu uni.id as personal_uni %}
+        {% for persona in personal_uni %}
+        <div class="boton3" id="activo{{persona.id}}">
+            <a href="{% url 'personal-unidad' persona.id %}">
+                <i class="fa fa-hand-o-right" aria-hidden="true"></i> {{ persona.name }} {{ persona.lastname }}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

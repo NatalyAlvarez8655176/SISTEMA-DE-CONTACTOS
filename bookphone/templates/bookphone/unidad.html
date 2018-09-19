@@ -1,0 +1,446 @@
+{% extends 'bookphone/list.html' %}
+
+{% load staticfiles %}
+{% load static %}
+{% load utils %}
+{% block js %}
+<script>
+$('#group_phone').parent().addClass('active');
+$('#group_phone').css('display', 'block');
+//$('#group_phone').children('li').eq({{un.id}}).addClass('current-page');
+$('#{{se.id}}').addClass('current-page');
+
+$('#activo{{un.id}}').addClass('btnactivo');
+
+   (function(){
+    'use strict';
+	var $ = jQuery;
+	$.fn.extend({
+		filterTable: function(){
+			return this.each(function(){
+				$(this).on('keyup', function(e){
+					$('.filterTable_no_results').remove();
+					var $this = $(this),
+                        search = $this.val().toLowerCase(),
+                        target = $this.attr('data-filters'),
+                        $target = $(target),
+                        $rows = $target.find('tbody tr');
+
+					if(search == '') {
+						$rows.show();
+					} else {
+						$rows.each(function(){
+							var $this = $(this);
+							$this.text().toLowerCase().indexOf(search) === -1 ? $this.hide() : $this.show();
+						})
+						if($target.find('tbody tr:visible').size() === 0) {
+							var col_count = $target.find('tr').first().find('td').size();
+							var no_results = $('<tr class="filterTable_no_results"><td colspan="'+col_count+'">Sin resultados</td></tr>')
+							$target.find('tbody').append(no_results);
+						}
+					}
+				});
+			});
+		}
+	});
+	$('[data-action="filter"]').filterTable();
+})(jQuery);
+
+</script>
+<script type="text/javascript">
+        var map;
+        var markers = [];
+        var lat = '{{ un.lat }}';
+        var lng = '{{ un.lng }}';
+        function initialize() {
+            var myLatlng = new google.maps.LatLng(lat, lng);
+            var myOptions = {
+                zoom: 19,
+                center: myLatlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            map = new google.maps.Map(document.getElementById("gmap"), myOptions);
+
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(lat, lng),
+                map: map
+            });
+            markers.push(marker);
+        }
+
+        window.onload = function () {
+            initialize()
+        };
+
+
+</script>
+<script>
+    $('#btn_editarU').on('click',function(){
+        $('#unidad_edit').modal('show');
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+            $('[data-tooltip="tooltip"]').tooltip();
+            $('[title]').tooltip();
+
+            $('#confirm-delete').on('show.bs.modal', function (e) {
+
+                var title = $(e.relatedTarget).data('title');
+                var message = $(e.relatedTarget).data('message');
+
+                if (title !== undefined)
+                    $(this).find('.modal-header').html(title);
+                if (message !== undefined)
+                    $(this).find('.modal-body').html('<strong class="text-warning">' + message + '</strong>');
+                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+            });
+        })
+
+</script>
+<script>
+    function mostrarImagen(input) {
+     if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+       $('#img_destino').attr('src', e.target.result);
+      }
+      reader.readAsDataURL(input.files[0]);
+     }
+    }
+
+    $("#id_image").change(function(){
+     mostrarImagen(this);
+    });
+
+
+</script>
+{% include 'bookphone/url_maps.html' %}
+{% endblock %}
+
+{% block back %}
+<div class="title_right">
+    <p class="text-right" style="margin-bottom: 0px; padding-bottom: 0px;">
+        <a class="btn btn-dark btn-sm" href="{% url 'list' se.id %}" style="margin-bottom: 0px;">
+            <span class="glyphicon glyphicon-backward"></span> REGRESAR
+        </a>
+    </p>
+</div>
+{% endblock %}
+
+{% block home %}
+<div class="col-md-7 col-sm-12 col-xs-12">
+    <div class="card">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab"><i
+                    class="fa fa-home"></i> 
+                <span>Informacion</span></a>
+            </li>
+            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab"><i
+                    class="fa fa-user"></i> 
+                <span>Personal</span></a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <div class="">
+                    <div class="x_title" align="center">
+                        <h3><font face="Baskerville Old Face">{{un.name}}</font></h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3" align="right">
+                            <img src="{% static 'build/images/tel.png' %} ">
+                        </div>
+                        <div class="col-md-9">
+                            <h2><font face="Monotype Corsiva" size="4px">NUMERO</font></h2>
+                            <h4><font size="4px">{{ un.number}}</font></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3" align="right">
+                            <img src="{% static 'build/images/fax.png' %} ">
+                        </div>
+                        <div class="col-md-9">
+                            <h2><font face="Monotype Corsiva" size="4px">FAX</font></h2>
+                            <h4><font size="4px">{{ un.fax}}</font></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3" align="right">
+                            <img src="{% static 'build/images/dir.png' %} ">
+                        </div>
+                        <div class="col-md-9">
+                            <h2><font face="Monotype Corsiva" size="4px">DIRECCION</font></h2>
+                            <h4><font size="4px">{{ un.address}}</font></h4>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="map-area" align="center">
+                        <h2><font face="Monotype Corsiva" size="4px">UBICACION</font></h2>
+                        <div>
+                            <div class="col-12 box box-body" onload="initialize()">
+                                <div class="white-box">
+                                    <p><strong>Ubicacion</strong></p>
+                                    <div id="gmap" class="map"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="btn btn-dark btn-sm" style="margin-bottom: 0px;" id="btn_editarU">
+                            <span class="glyphicon glyphicon-edit"></span> EDITAR
+                        </a>
+                        <a rel="tooltip" title="Eliminar" class="btn btn-dark btn-sm"
+                           style="margin-bottom: 0px;"
+                           data-href="{% url 'delete_unidad' un.id %}" data-toggle="modal"
+                           data-target="#confirm-delete">
+                            <span class="glyphicon glyphicon-remove"></span> ELIMINAR
+                        </a>
+                    </div>
+                    <!--<div class="boton">
+                        <i class="fa fa-map-marker" aria-hidden="true" style="color: white font-size:100x;"></i>
+                    </div>-->
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="profile">
+                <div class="container-fluid">
+                    <div class="x_title" align="center">
+                        <h3><font face="Baskerville Old Face">PERSONAL {{un.name}}</font></h3>
+                    </div>
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <input type="text" class="form-control" id="dev-table-filter" data-action="filter"
+                                   data-filters="#dev-table" placeholder="Buscar Personal"/>
+                                </div>
+                                <div class="col-md-5">
+                                    <a rel="tooltip" title="nuevo" class="btn btn-dark btn-sm"
+                                       style="margin-bottom: 0px;"
+                                       data-href="" data-toggle="modal"
+                                       data-target="#nuevo_personal_unidad" id="#nuevo_personal_unidad">
+                                        <span class="glyphicon glyphicon-plus"></span> NUEVO
+                                        PERSONAL SECRETARIA
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body table-responsive">
+                            <table class="table table-hover" id="dev-table">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center"> NOMBRE</th>
+                                    <th class="text-center"> APELLIDO</th>
+                                    <th class="text-center"> CARGO</th>
+                                    <th class="text-center"></th>
+                                    <!--<th class="text-center"> TELEFONO</th>
+                                    <th class="text-center"> CELULAR</th>-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for persona in personal_u %}
+                                <tr class="edit" id="detail">
+                                    <td id="no" class="text-center">{{forloop.counter}}</td>
+                                    <td id="name" class="text-center"> {{persona.name}}</td>
+                                    <td id="mobile" class="text-center">{{persona.lastname}}</td>
+                                    <td id="mail" class="text-center">{{persona.position}}</td>
+                                    <td id="" class="text-center">
+                                        <a href="{% url 'personal-unidad' persona.id %}" class="btn btn-danger"
+                                           data-toggle="tooltip"
+                                           data-placement="bottom" title="DETALLES"><em
+                                                class="fa fa-plus"></em></a>
+                                    </td>
+                                    <!--<td id="t" class="text-center">{{persona.telephone}}</td>
+                                    <td id="city" class="text-center">{{persona.phone}}</td>-->
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="unidad_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <p class="text-center">
+                        <span><label>EDITAR DATOS DE UNIDAD</label></span>
+                    </p>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-label-left" align="center">
+                    <form class="well22 form-horizontal" method="POST" action="{% url 'editar_unidad' un.id %}">
+                        {% csrf_token %}
+                        {% for input in form %}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">{{input.label}}</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="glyphicon glyphicon-edit"></i>
+                                        </span>
+                                    <div class="input1">
+                                        {{input}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <br>
+                        <br>
+                        <br>
+                        <div class="clearfix"></div>
+                        <div class="" align="center">
+                            <button type="submit" class="btn btn-dark" id="modal_save"><span
+                                    class="glyphicon glyphicon-saved"></span>
+                                GUARDAR
+                            </button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal" id="modal_close"><span
+                                    class="glyphicon glyphicon-remove-circle"></span>
+                                CANCELAR
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="nuevo_personal_unidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times</span>
+            </button>
+            <div class="modal-header" align="center"><h4>REGISTRAR NUEVO PERSONAL UNIDAD</h4></div>
+            <div class="row">
+                <div class="modal-body">
+                    <div class="col-md-7">
+                        <td colspan="">
+                            <form method="POST" class="well form-horizontal" action="{% url 'nuevo_personal_uni' %}"
+                                  enctype="multipart/form-data">{% csrf_token %}
+                                <div class="form-group">
+                                    <input type="hidden" name="unidad" value="{{ un.id }}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.name.label}}</h5></label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                               <span class="input-group-addon">
+                                                 <i class="glyphicon glyphicon-user"></i>
+                                               </span>
+                                            {{ formPersonal.name}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.lastname.label}}</h5>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                   <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{ formPersonal.lastname}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.position.label}}</h5>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                   <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{formPersonal.position}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.telephone.label}}</h5>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{formPersonal.telephone}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.phone.label}}</h5></label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{formPersonal.phone}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.image.label}}</h5></label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{formPersonal.image}}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br>
+                                <div align="center">
+                                    <button type="submit" class="btn btn-dark"><span
+                                            class="glyphicon glyphicon-saved"></span>
+                                        CREAR NUEVO
+                                    </button>
+                                    <button type="button" class="btn btn-dark" data-dismiss="modal"><span
+                                            class="glyphicon glyphicon-remove-circle"></span>
+                                        CANCELAR
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group" align="center">
+                            <label class="control-label col-12">VISTA PREVIA</label>
+                            <br>
+                            <br>
+                            <div class="col-12">
+                                <img id="img_destino" src="{% static 'build/images/user.jpg' %}"
+                                     class="img11-circle profile_img" width="300px" height="300px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}
+
+{% block nueva_unidad%}
+{% endblock%}
+
+{% block personal_unidad %}
+{% endblock %}
+

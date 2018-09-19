@@ -1,0 +1,637 @@
+{% extends 'bookphone/base.html' %}
+
+{% load staticfiles %}
+{% load static %}
+{% load utils %}
+
+{% block content%}
+<div class=right_col>
+    <div class="">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-10" align="right">
+                    <div class="page-title" align="center">
+                        <h3><font face="Cooper Black">{{se.name}}</font></h3>
+
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    {% block back %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {% block home %}
+            <div class="col-md-7 col-sm-12 col-xs-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Nav tabs -->
+                        <div class="card">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab"
+                                                                          data-toggle="tab"><i class="fa fa-home"></i> 
+                                    <span>Informacion</span></a>
+                                </li>
+                                <li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
+                                                           data-toggle="tab"><i class="fa fa-user"></i> 
+                                    <span>Personal</span></a>
+                                </li>
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="home">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-md-3" align="right">
+                                                <img src="{% static 'build/images/tel.png' %} ">
+                                            </div>
+                                            <div class="col-md-9">
+                                                <h2><font face="Monotype Corsiva" size="4px">NUMERO</font></h2>
+                                                <h4><font size="4px">{{ se.number}}</font></h4>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3" align="right">
+                                                <img src="{% static 'build/images/fax.png' %} ">
+                                            </div>
+                                            <div class="col-md-9">
+                                                <h2><font face="Monotype Corsiva" size="4px">FAX</font></h2>
+                                                <h4><font size="4px">{{ se.fax}}</font></h4>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3" align="right">
+                                                <img src="{% static 'build/images/dir.png' %} ">
+                                            </div>
+                                            <div class="col-md-9">
+                                                <h2><font face="Monotype Corsiva" size="4px">DIRECCION</font></h2>
+                                                <h4><font size="4px">{{ se.address}}</font></h4>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <div class="map-area" align="center">
+                                            <h2><font face="Monotype Corsiva" size="4px">UBICACION</font></h2>
+                                            <div>
+                                                <div class="col-12 box box-body" onload="initialize1()">
+                                                    <div class="white-box">
+                                                        <p><strong>Ubicacion</strong></p>
+                                                        <div id="gmap1" class="map"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <a class="btn btn-dark btn-sm" style="margin-bottom: 0px;" id="btn_editar">
+                                                <span class="glyphicon glyphicon-edit"></span> EDITAR
+                                            </a>
+                                            <a rel="tooltip" title="Eliminar" class="btn btn-dark btn-sm"
+                                               style="margin-bottom: 0px;"
+                                               data-href="{% url 'delete_secretaria' se.id %}" data-toggle="modal"
+                                               data-target="#confirm-delete">
+                                                <span class="glyphicon glyphicon-remove"></span> ELIMINAR
+                                            </a>
+                                        </div>
+                                        <!--<div class="boton">
+                                            <i class="fa fa-map-marker" aria-hidden="true" style="color: white font-size:100x;"></i>
+                                        </div>-->
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="profile">
+                                    <div class="container-fluid">
+                                        <div class="panel panel-success">
+                                            <div class="panel-heading">
+                                                <div class="row">
+                                                    <div class="col-md-7">
+                                                        <input type="text" class="form-control" id="dev-table-filter"
+                                                               data-action="filter" data-filters="#dev-table"
+                                                               placeholder="Buscar Personal"/>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <a rel="tooltip" title="nuevo" class="btn btn-dark btn-sm"
+                                                           style="margin-bottom: 0px;"
+                                                           data-href="" data-toggle="modal"
+                                                           data-target="#nuevo_personal" id="#nuevo_personal">
+                                                            <span class="glyphicon glyphicon-plus"></span> NUEVO
+                                                            PERSONAL SECRETARIA
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body table-responsive">
+                                                <table class="table table-hover" id="dev-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center">#</th>
+                                                        <th class="text-center"> NOMBRE</th>
+                                                        <th class="text-center"> APELLIDO</th>
+                                                        <th class="text-center"> CARGO</th>
+                                                        <th class="text-center"></th>
+                                                        <!--<th class="text-center"> TELEFONO</th>
+                                                        <th class="text-center"> CELULAR</th>-->
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for persona in personal %}
+                                                    <tr class="edit" id="detail">
+                                                        <td id="no" class="text-center">{{forloop.counter}}</td>
+                                                        <td id="name" class="text-center"> {{persona.name}}</td>
+                                                        <td id="mobile" class="text-center">{{persona.lastname}}</td>
+                                                        <td id="mail" class="text-center">{{persona.position}}</td>
+                                                        <td id="" class="text-center">
+                                                            <a href="{% url 'personal-secretaria' persona.id %}"
+                                                               class="btn btn-danger" data-toggle="tooltip"
+                                                               data-placement="bottom" title="DETALLES"><em
+                                                                    class="fa fa-plus"></em></a>
+                                                        </td>
+                                                        <!--<td id="t" class="text-center">{{persona.telephone}}</td>
+                                                        <td id="city" class="text-center">{{persona.phone}}</td>-->
+                                                    </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+
+            {% block personal %}
+            {% endblock %}
+
+            {% block personal_unidad %}
+            {% endblock %}
+
+            {% block unidad %}
+            <div class="col-md-5 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <div class=" clearfix">
+                            <h2><img src="{% static 'build/images/secre.png' %}"> Direcciones/Unidades </h2>
+                            {% block nueva_unidad%}
+                            <div align="center">
+                                <a rel="tooltip" title="nuevo" class="btn btn-dark btn-sm" style="margin-bottom: 0px;"
+                                   data-href="" data-toggle="modal" data-target="#nueva_unidad" id="#nueva_unidad">
+                                    <span class="glyphicon glyphicon-plus"></span> NUEVA UNIDAD/DIRECCION
+                                </a>
+                            </div>
+                            {% endblock %}
+                        </div>
+                    </div>
+                    {% get_unidad se.id as unid %}
+                    {% for u in unid %}
+                    <div class="boton3 nav" id="activo{{u.id}}">
+                        <a href="{% url 'unidad' u.id %}" id="{{u.id}}">
+                            <i class="fa fa-hand-o-right" aria-hidden="true"></i> {{ u.name }}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel" align="center">EDITAR DATOS DE SECRETARIA</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-label-left" align="center">
+                    <form class="well22 form-horizontal" method="POST" action="{% url 'editar_secretaria' se.id %}">
+                        {% csrf_token %}
+                        {% for input in form %}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">
+                                {{input.label}}
+                            </label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-edit"></i>
+                                    </span>
+                                    <div class="input1">
+                                        {{input}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <br>
+                        <br>
+                        <br>
+                        <div class="clearfix"></div>
+                        <div class="" align="center">
+                            <button type="submit" class="btn btn-dark" id="modal_planilla_btn_save"><span class="glyphicon glyphicon-saved"></span>
+                                GUARDAR
+                            </button>
+                            <button type="button" class="btn btn-dark" data-dismiss="modal" id="modal_planilla_btn_close"><span class="glyphicon glyphicon-remove-circle"></span>
+                                CANCELAR
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="nueva_unidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" align="center"><h4>REGISTRAR NUEVA UNIDAD</h4></div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <td colspan="">
+                                <form method="POST" class="well form-horizontal" action="{% url 'nueva_unidad' %}">{% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="hidden" name="secretaria" value="{{ se.id }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"><h5>{{formUnidad.name.label}}</h5></label>
+                                        <div class="col-md-9">
+                                            <div class="input-group">
+                                                   <span class="input-group-addon">
+                                                     <i class="glyphicon glyphicon-user"></i>
+                                                   </span>
+                                                {{ formUnidad.name}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"><h5>{{formUnidad.number.label}}</h5></label>
+                                        <div class="col-md-9">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                       <i class="glyphicon glyphicon-phone-alt"></i>
+                                                    </span>
+                                                {{ formUnidad.number}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"><h5>{{formUnidad.fax.label}}</h5></label>
+                                        <div class="col-md-9">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                       <i class="glyphicon glyphicon-print"></i>
+                                                    </span>
+                                                {{formUnidad.fax}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"><h5>{{formUnidad.address.label}}</h5></label>
+                                        <div class="col-md-9">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="glyphicon glyphicon-screenshot"></i>
+                                                    </span>
+                                                {{formUnidad.address}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"><h5><font style="text-transform: uppercase;">{{formUnidad.lat.label}}</font>
+                                        </h5></label>
+                                        <div class="col-md-9">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="glyphicon glyphicon-map-marker"></i>
+                                                    </span>
+                                                {{formUnidad.lat}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"><h5><font style="text-transform: uppercase;">{{formUnidad.lng.label}}</font>
+                                        </h5></label>
+                                        <div class="col-md-9">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="glyphicon glyphicon-map-marker"></i>
+                                                    </span>
+                                                {{formUnidad.lng}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div align="center">
+                                        <button type="submit" class="btn btn-dark"><span
+                                                class="glyphicon glyphicon-saved"></span>
+                                            CREAR NUEVO
+                                        </button>
+                                        <button type="button" class="btn btn-dark" data-dismiss="modal"><span
+                                                class="glyphicon glyphicon-remove-circle"></span>
+                                            CANCELAR
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="box box-body" onload="initialize()">
+                                <div class="white-box">
+                                    <div id="gmaplocation" class="map"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="nuevo_personal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times</span>
+                </button>
+            <div class="modal-header" align="center"><h4>REGISTRAR NUEVO PERSONAL SECRETARIA</h4></div>
+            <div class="row">
+                <div class="modal-body">
+                    <div class="col-md-7">
+                        <td colspan="">
+                            <form method="POST" class="well form-horizontal" action="{% url 'nuevo_personal_secre' %}"
+                                  enctype="multipart/form-data">{% csrf_token %}
+                                <div class="form-group">
+                                    <input type="hidden" name="secretaria" value="{{ se.id }}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.name.label}}</h5></label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                               <span class="input-group-addon">
+                                                 <i class="glyphicon glyphicon-user"></i>
+                                               </span>
+                                            {{ formPersonal.name}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.lastname.label}}</h5>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                   <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{ formPersonal.lastname}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.position.label}}</h5>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                   <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{formPersonal.position}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.telephone.label}}</h5>
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{formPersonal.telephone}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.phone.label}}</h5></label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{formPersonal.phone}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label"><h5>{{formPersonal.image.label}}</h5></label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="glyphicon glyphicon-user"></i>
+                                                </span>
+                                            {{formPersonal.image}}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br>
+                                <div align="center">
+                                    <button type="submit" class="btn btn-dark"><span
+                                            class="glyphicon glyphicon-saved"></span>
+                                        CREAR NUEVO
+                                    </button>
+                                    <button type="button" class="btn btn-dark" data-dismiss="modal"><span
+                                            class="glyphicon glyphicon-remove-circle"></span>
+                                        CANCELAR
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group" align="center">
+                            <label class="control-label col-12">VISTA PREVIA</label>
+                            <br>
+                            <br>
+                            <div class="col-12">
+                                <img id="img_destino" src="{% static 'build/images/user.jpg' %}" class="img11-circle profile_img" width="300px" height="300px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+{% include 'bookphone/url_maps.html' %}
+<!--mapa-->
+<script type="text/javascript">
+        var map1;
+        var markers1 = [];
+        var lat1 = '{{ se.lat }}';
+        var lng1 = '{{ se.lng }}';
+        function initialize1() {
+            var myLatlng1 = new google.maps.LatLng(lat1, lng1);
+            var myOptions1 = {
+                zoom: 19,
+                center: myLatlng1,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            map1 = new google.maps.Map(document.getElementById("gmap1"), myOptions1);
+
+            var marker1 = new google.maps.Marker({
+                position: new google.maps.LatLng(lat1, lng1),
+                map: map1
+            });
+            markers1.push(marker1);
+        }
+
+        window.onload = function () {
+            initialize1();
+            initialize()
+        };
+
+        var map;
+        var markers = [];
+        function initialize() {
+            var myLatlng = new google.maps.LatLng(-19.5874135,-65.7624432);
+            var myOptions = {
+                zoom: 14,
+                center: myLatlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+
+            map = new google.maps.Map(document.getElementById("gmaplocation"), myOptions);
+            // marker refers to a global variable
+
+            google.maps.event.addListener(map, "click", function (event) {
+                // get lat/lon of click
+                var clickLat = event.latLng.lat();
+                var clickLon = event.latLng.lng();
+                //alert (clickLat+' '+clickLon);
+
+                // show in input box
+                //document.getElementsByClassName("lat_unidad").value = clickLat;
+                //document.getElementsByClassName("lng_unidad").value = clickLon;
+                $('.lat_unidad').val(clickLat);
+                $('.lng_unidad').val(clickLon);
+                //alert ($('#id_fax').val());
+                document.getElementById("id_lng").value = clickLon;
+                clearMapOnAll(null);
+
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(clickLat, clickLon),
+                    map: map
+                });
+                markers.push(marker)
+            });
+        }
+        function clearMapOnAll(map) {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+</script>
+<!--modal edit-->
+<script>
+    $('#btn_editar').on('click',function(){
+        $('#modal_edit').modal('show');
+    });
+</script>
+<!--modal delete-->
+<script>
+    $(document).ready(function () {
+            $('[data-tooltip="tooltip"]').tooltip();
+            $('[title]').tooltip();
+
+            $('#confirm-delete').on('show.bs.modal', function (e) {
+
+                var title = $(e.relatedTarget).data('title');
+                var message = $(e.relatedTarget).data('message');
+
+                if (title !== undefined)
+                    $(this).find('.modal-header').html(title);
+                if (message !== undefined)
+                    $(this).find('.modal-body').html('<strong class="text-warning">' + message + '</strong>');
+                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+            });
+        })
+
+
+</script>
+<!--buscador-->
+<script>
+$('#group_unit').children('a').eq({{un.id}}).addClass('current-page');
+$('#{{u.id}}').addClass('current-page');
+
+(function(){
+    'use strict';
+	var $ = jQuery;
+	$.fn.extend({
+		filterTable: function(){
+			return this.each(function(){
+				$(this).on('keyup', function(e){
+					$('.filterTable_no_results').remove();
+					var $this = $(this),
+                        search = $this.val().toLowerCase(),
+                        target = $this.attr('data-filters'),
+                        $target = $(target),
+                        $rows = $target.find('tbody tr');
+
+					if(search == '') {
+						$rows.show();
+					} else {
+						$rows.each(function(){
+							var $this = $(this);
+							$this.text().toLowerCase().indexOf(search) === -1 ? $this.hide() : $this.show();
+						})
+						if($target.find('tbody tr:visible').size() === 0) {
+							var col_count = $target.find('tr').first().find('td').size();
+							var no_results = $('<tr class="filterTable_no_results"><td colspan="'+col_count+'">Sin resultados</td></tr>')
+							$target.find('tbody').append(no_results);
+						}
+					}
+				});
+			});
+		}
+	});
+	$('[data-action="filter"]').filterTable();
+})(jQuery);
+
+
+</script>
+<!--vista previa imagen-->
+<script>
+    function mostrarImagen(input) {
+     if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+       $('#img_destino').attr('src', e.target.result);
+      }
+      reader.readAsDataURL(input.files[0]);
+     }
+    }
+
+    $("#id_image").change(function(){
+     mostrarImagen(this);
+    });
+</script>
+
+
+{% endblock %}

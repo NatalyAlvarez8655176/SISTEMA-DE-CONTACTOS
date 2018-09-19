@@ -1,0 +1,190 @@
+{% extends 'bookphone/list.html' %}
+
+{% load staticfiles %}
+{% load static %}
+{% load utils %}
+
+{% block js %}
+<script>
+$('#group_phone').parent().addClass('active');
+$('#group_phone').css('display', 'block');
+//$('#group_phone').children('li').eq({{un.id}}).addClass('current-page');
+$('#{{se.id}}').addClass('current-page');
+
+$('#activo{{personal.id}}').addClass('btnactivo');
+
+</script>
+<script>
+    $('#btn_editarPS').on('click',function(){
+        $('#personal_secre_edit').modal('show');
+    });
+
+</script>
+<!--modal delete-->
+{% endblock %}
+
+{% block back %}
+<div class="title_right">
+    <p class="text-right" style="margin-bottom: 0px; padding-bottom: 0px;">
+        <a class="btn btn-dark btn-sm" href="{% url 'list' se.id %}" style="margin-bottom: 0px;">
+            <span class="glyphicon glyphicon-backward"></span> REGRESAR
+        </a>
+    </p>
+</div>
+{% endblock %}
+
+{% block home %}
+<br>
+<br>
+<br>
+<div class="col-md-7 col-sm-12 col-xs-12">
+    <div class="card">
+        <div class="x_title" align="center">
+            <h3><font face="Baskerville Old Face"> DETALLE PERSONAL {{se.name}}</font></h3>
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-md-4" align="right">
+                        <img src="{% static 'build/images/name.png' %} ">
+                    </div>
+                    <div class="col-md-8">
+                        <h2><font face="Monotype Corsiva" size="4px">NOMBRE</font></h2>
+                        <h4><font size="4px">{{ personal.name}} {{ personal.lastname }}</font></h4>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-4" align="right">
+                        <img src="{% static 'build/images/cargo1.png' %} ">
+                    </div>
+                    <div class="col-md-8">
+                        <h2><font face="Monotype Corsiva" size="4px">CARGO</font></h2>
+                        <h4><font size="4px">{{ personal.position}}</font></h4>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-4" align="right">
+                        <img src="{% static 'build/images/telefono.png' %} ">
+                    </div>
+                    <div class="col-md-8">
+                        <h2><font face="Monotype Corsiva" size="4px">TELEFONO</font></h2>
+                        <h4><font size="4px">{{ personal.telephone}}</font></h4>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-4" align="right">
+                        <img src="{% static 'build/images/cel.png' %} ">
+                    </div>
+                    <div class="col-md-8">
+                        <h2><font face="Monotype Corsiva" size="4px">CELULAR</font></h2>
+                        <h4><font size="4px">{{ personal.phone}}</font></h4>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div class="col-md-5" align="left">
+                <div align=""><h2><font face="Monotype Corsiva" size="4px">FOTO</font></h2></div>
+                <img src="{{ personal.image.url }}" class="img1-circle profile_img">
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div align="center">
+            <a class="btn btn-dark btn-sm" style="margin-bottom: 0px;" id="btn_editarPS">
+                <span class="glyphicon glyphicon-edit"></span> EDITAR
+            </a>
+            <a rel="tooltip" title="Eliminar" class="btn btn-dark btn-sm"
+               style="margin-bottom: 0px;"
+               data-href="{% url 'delete_personal_secre' personal.id %}" data-toggle="modal"
+               data-target="#confirm-delete">
+                <span class="glyphicon glyphicon-remove"></span> ELIMINAR
+            </a>
+        </div>
+        <br>
+    </div>
+</div>
+<div class="modal fade" id="personal_secre_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">PERSONAL SECRETARIA</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-label-left">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <p class="text-center">
+                            <span><label>EDITAR DATOS</label></span>
+                        </p>
+                    </div>
+                    <form class="form-group form-horizontal" method="POST"
+                          action="{% url 'editar_personal_secre' personal.id %}">
+                        {% csrf_token %}
+                        {% for input in form %}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">{{input.label}}</label>
+                            <div class="col-md-9">{{input}}</div>
+                        </div>
+                        {% endfor %}
+                        <div class="clearfix"></div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-dark" id="modal_save">Guardar</button>
+                            <button type="close" class="btn btn-default" id="modal_close">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="modalLabelSmall"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modal-content-delete">
+
+            <div class="modal-body text-center">
+                <img src="{% static 'build/images/warning_alert.png' %}" alt="" height="75px">
+                <h1>
+                    <strong class="text-danger">Esta seguro de eliminar?</strong>
+                </h1>
+                <h5 class="text-black">Una vez eliminado no podra recuperar los datos</h5>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-black" data-dismiss="modal">Cancelar</button>
+                <a class="btn btn-danger btn-ok">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}
+
+{% block unidad %}
+{% endblock %}
+
+{% block personal %}
+<!--menu personal-->
+<div class="col-md-5 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <div class=" clearfix" align="center">
+                <h4><img src="{% static 'build/images/personal.png' %}"> PERSONAL {{se.name}}</h4>
+            </div>
+        </div>
+        {% get_personal se.id as personal %}
+        {% for persona in personal %}
+        <div class="boton3" id="activo{{persona.id}}">
+            <a href="{% url 'personal-secretaria' persona.id %}">
+                <i class="fa fa-hand-o-right" aria-hidden="true"></i> {{ persona.name }} {{ persona.lastname }}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

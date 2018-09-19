@@ -1,0 +1,169 @@
+{% load staticfiles %}
+{% load static %}
+{% load utils %}
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+
+
+    <title>Gentelella Alela! | </title>
+    {% block extrastic %}
+    {% endblock %}
+    <!-- Bootstrap -->
+    <link href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'build/css/custom.css' %}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+
+    <!-- iCheck -->
+
+
+    <!-- bootstrap-progressbar -->
+
+    <!-- JQVMap -->
+
+    <!-- bootstrap-daterangepicker -->
+
+
+    <!-- Custom Theme Style -->
+    <link href="{% static 'build/css/custom.min.css' %}" rel="stylesheet">
+
+</head>
+<body class="nav-md" style="background: #F7F7F7">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a class="site_title">
+                        <img src="{% static 'build/images/logo5.png' %}" style="width: 50px">
+                        <span>GADP</span>
+                    </a>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <!-- menu profile quick info -->
+                <div class="profile clearfix">
+                    <div class="profile_pic">
+                        <img src="{% static 'build/images/foto1.jpg' %}" alt="..." class="img-circle profile_img">
+                    </div>
+                    <div class="profile_info">
+                        <span>Welcome,</span>
+                        <h2>John Doe</h2>
+                    </div>
+                </div>
+                <!-- /menu profile quick info -->
+
+                <br/>
+
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <h3>General</h3>
+                        <ul class="nav side-menu">
+                            <li><a><i class="fa fa-phone"></i> TELEFONO <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu" id="group_phone">
+                                    <li><a href="{% url 'nueva_secretaria' %}" class="top-menu"><span
+                                            class="glyphicon glyphicon-plus"></span> NUEVA SECRETARIA</a></li>
+                                    {% get_secretarias as es %}
+                                    {% for e in es %}
+                                    <li class="{{e.id}}" id="{{e.id}}"><a href="{% url 'list' e.id %}"> {{e.name}}<span
+                                            class="fa fa-chevron-down"></span></a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <nav>
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                </nav>
+            </div>
+            <div class="container" style="center">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+        <!-- /footer content -->
+    </div>
+</div>
+
+
+<!-- jQuery -->
+<script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+<!-- Bootstrap -->
+<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<!-- FastClick -->
+
+<!-- NProgress -->
+
+<!-- Chart.js -->
+
+<!-- gauge.js -->
+
+<!-- bootstrap-progressbar -->
+>
+<!-- iCheck -->
+
+<!-- Skycons -->
+
+<!-- Flot -->
+
+<!-- Flot plugins -->
+<script src="{% static 'vendors/flot.orderbars/js/jquery.flot.orderBars.js' %}"></script>
+<script src="{% static 'vendors/flot-spline/js/jquery.flot.spline.min.js' %}"></script>
+<script src="{% static 'vendors/flot.curvedlines/curvedLines.js' %}"></script>
+<!-- DateJS -->
+<script src="{% static 'vendors/DateJS/build/date.js' %}"></script>
+<!-- JQVMap -->
+
+<!-- bootstrap-daterangepicker -->
+
+
+<!-- Custom Theme Scripts -->
+<script src="{% static 'build/js/custom.min.js' %}"></script>
+<script src="{% static 'build/js/sweetalert/sweetalert.min.js' %}"></script>
+
+{% block js %}
+{% endblock %}
+
+
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="modalLabelSmall"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modal-content-delete">
+
+            <div class="modal-body text-center">
+                <img src="{% static 'build/images/warning_alert.png' %}" alt="" height="75px">
+                <h1>
+                    <strong class="text-danger">Esta seguro de eliminar?</strong>
+                </h1>
+                <h5 class="text-black">Una vez eliminado no podra recuperar los datos</h5>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-black" data-dismiss="modal">Cancelar</button>
+                <a class="btn btn-danger btn-ok">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% load sweetify %}
+{% sweetify %}
+</body>
+</html>
